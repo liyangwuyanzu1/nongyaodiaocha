@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>农药用量分析一张图 - 大屏监测系统</title>
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <!-- jQuery for data fetching and easier DOM manipulation -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <!-- Flatpickr for date picking -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- 头部区域 -->
+        <header class="header">
+            <div class="header-left">
+                <span id="current-time">2026-05-15 09:00:00</span>
+            </div>
+            <div class="header-center">
+                <h1>农药用量分析一张图</h1>
+            </div>
+            <div class="header-right">
+                <div class="time-filter">
+                    <button class="filter-btn active" data-range="week">本周</button>
+                    <button class="filter-btn" data-range="month">本月</button>
+                    <div class="custom-range">
+                        <input type="text" id="date-range-picker" placeholder="自定义时间范围" readonly>
+                        <i class="icon-calendar"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 顶部核心指标卡片 -->
+        <section class="top-indicators">
+            <div class="indicator-card" id="total-usage">
+                <div class="label">年度农药累计使用量</div>
+                <div class="value">12,450.00 <span class="unit">吨</span></div>
+                <div class="comparison">同比 <span class="up">↑ 5.2%</span> 环比 <span class="down">↓ 1.8%</span></div>
+            </div>
+            <div class="indicator-card" id="commodity-volume">
+                <div class="label">农药商品量</div>
+                <div class="value">15,680.00 <span class="unit">吨</span></div>
+                <div class="comparison">同比 <span class="up">↑ 3.1%</span></div>
+            </div>
+            <div class="indicator-card" id="active-ingredient">
+                <div class="label">农药折百量</div>
+                <div class="value">8,920.00 <span class="unit">吨</span></div>
+                <div class="comparison">同比 <span class="down">↓ 2.4%</span></div>
+            </div>
+            <div class="indicator-card" id="usage-area">
+                <div class="label">农药使用面积</div>
+                <div class="value">450.50 <span class="unit">万亩</span></div>
+                <div class="comparison">同比 <span class="up">↑ 1.5%</span></div>
+            </div>
+            <div class="indicator-card" id="usage-frequency">
+                <div class="label">农药使用次数</div>
+                <div class="value">3.2 <span class="unit">次/季</span></div>
+                <div class="comparison">同比 <span class="down">↓ 0.5%</span></div>
+            </div>
+            <div class="indicator-card highlight" id="intensity-vs-std">
+                <div class="label">农药使用强度 / 国家标准</div>
+                <div class="value">0.85 / 1.0 <span class="unit">kg/亩</span></div>
+                <div class="status-tag success">达标</div>
+            </div>
+        </section>
+
+        <!-- 主体区域 -->
+        <main class="main-content">
+            <!-- 左侧图表 -->
+            <aside class="side-panel left-panel">
+                <div class="chart-box">
+                    <div class="chart-title">
+                        <span>农药使用量年度趋势</span>
+                        <select id="trend-pesticide-filter" class="title-select">
+                            <option value="all">全部农药</option>
+                        </select>
+                    </div>
+                    <div id="trend-chart" class="chart-container"></div>
+                </div>
+                <div class="chart-box tabbed-chart">
+                    <div class="chart-title-fixed">农药使用结构分析</div>
+                    <div class="chart-tabs">
+                        <button class="tab-btn active" data-tab="category">农药品类</button>
+                        <button class="tab-btn" data-tab="toxicity">毒性分布</button>
+                        <button class="tab-btn" data-tab="formulation">剂型分布</button>
+                    </div>
+                    <div class="tab-content">
+                        <div id="category-pie" class="chart-container active"></div>
+                        <div id="toxicity-pie" class="chart-container"></div>
+                        <div id="formulation-pie" class="chart-container"></div>
+                    </div>
+                </div>
+                <div class="chart-box tabbed-chart">
+                    <div class="chart-header-flex">
+                        <div class="chart-title-fixed" id="top10-title">作物农药使用量 TOP10</div>
+                        <div class="mini-tabs">
+                            <button class="mini-tab-btn active" data-tab="crop">作物</button>
+                            <button class="mini-tab-btn" data-tab="pesticide">农药</button>
+                        </div>
+                    </div>
+                    <div class="tab-content">
+                        <div id="crop-usage-bar" class="chart-container active"></div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 中间地图区域 -->
+            <section class="center-panel">
+                <div class="map-controls">
+                    <div class="layer-toggle">
+                        <label class="radio-label active">
+                            <input type="radio" name="map-layer" id="layer-usage" checked> 农药使用量
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="map-layer" id="layer-intensity"> 农药使用强度
+                        </label>
+                        <div class="divider"></div>
+                        <select id="map-pesticide-filter" class="map-select">
+                            <option value="all">全部农药</option>
+                        </select>
+                        <div class="divider"></div>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="layer-stations" checked> 监测站点
+                        </label>
+                    </div>
+                    <div class="map-breadcrumb">
+                        <span id="breadcrumb-national" class="crumb active">全国</span>
+                        <span id="breadcrumb-province" class="crumb"></span>
+                        <span id="breadcrumb-city" class="crumb"></span>
+                    </div>
+                </div>
+                <div id="main-map" class="map-container"></div>
+                <div class="map-legend">
+                    <div class="legend-title">图例说明</div>
+                    <div class="legend-item usage-legend"><span class="color-box heatmap-usage"></span> <span class="legend-text">农药使用量</span></div>
+                    <div class="legend-item intensity-legend" style="display:none;"><span class="color-box heatmap-intensity"></span> <span class="legend-text">农药使用强度</span></div>
+                    <div class="legend-item"><span class="marker-station"></span> 监测站点</div>
+                </div>
+            </section>
+
+            <!-- 右侧图表 -->
+            <aside class="side-panel right-panel">
+                <div class="chart-box">
+                    <div class="chart-title">抗药性关联分析 (频率 vs 抗性)</div>
+                    <div id="resistance-scatter" class="chart-container"></div>
+                </div>
+                <div class="chart-box">
+                    <div class="chart-title">环境关联分析 (温湿度 vs 用量)</div>
+                    <div id="environment-line" class="chart-container"></div>
+                </div>
+                <div class="chart-box">
+                    <div class="chart-title">病虫害关联分析 (面积 vs 用量)</div>
+                    <div id="pest-bubble" class="chart-container"></div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <!-- 弹窗：站点详情 -->
+    <div id="station-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2 id="modal-station-name">站点名称</h2>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <h3>周边农药使用明细</h3>
+                    <table id="usage-detail-table">
+                        <thead>
+                            <tr><th>农药名称</th><th>使用量(kg)</th><th>次数</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="modal-info">
+                    <p><strong>当前病虫害发生等级:</strong> <span id="pest-level" class="level-tag">中</span></p>
+                    <p><strong>农药抗药性等级:</strong> <span id="resistance-level" class="level-tag high">高风险</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 业务脚本 -->
+    <script src="js/config.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
