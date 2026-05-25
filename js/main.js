@@ -18,30 +18,19 @@ const Dashboard = {
         // 3. 初始化 Tab 切换
         this.initTabs();
 
-        // 4. 启动自动轮播
-        this.startChartActionCarousel();
-        this.startMapCarousel();
+        // 3.5 初始化自动轮播
+        this.initCarousel();
 
-        // 5. 启动时钟
+        // 4. 启动时间显示
         this.startTime();
 
-        // 6. 绑定全局窗口调整事件
-        this.bindResizeEvent();
-    },
+        // 5. 绑定全局事件
+        this.bindEvents();
 
-    // 绑定全局窗口调整事件
-    bindResizeEvent() {
+        // 6. 处理响应式
         window.addEventListener('resize', () => {
-            // 调整地图大小
-            if (MapModule.chart) {
-                MapModule.chart.resize();
-            }
-            // 调整所有业务图表大小
-            Object.values(ChartsModule.instances).forEach(chart => {
-                if (chart) {
-                    chart.resize();
-                }
-            });
+            MapModule.chart.resize();
+            ChartsModule.resize();
         });
     },
 

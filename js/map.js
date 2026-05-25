@@ -20,35 +20,13 @@ const MapModule = {
         $('#breadcrumb-city').hide();
         $('#breadcrumb-national').addClass('active');
 
-        if (this.chart) {
-            this.chart.showLoading({
-                text: '正在加载地图数据...',
-                color: '#38bdf8',
-                textColor: '#a5b4fc',
-                maskColor: 'rgba(11, 15, 45, 0.6)'
-            });
-        }
-
         try {
-            let chinaJson;
-            try {
-                const response = await fetch(AppConfig.geoSource.national);
-                if (!response.ok) throw new Error('Primary source failed');
-                chinaJson = await response.json();
-            } catch (e) {
-                console.warn('Primary GeoJSON source failed, trying fallback...', e);
-                const response = await fetch(AppConfig.geoSource.fallback);
-                chinaJson = await response.json();
-            }
-            
+            const response = await fetch('https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json');
+            const chinaJson = await response.json();
             echarts.registerMap('china', chinaJson);
             this.renderMap('china', MockData.mapData);
         } catch (error) {
-            console.error('加载地图失败 (主备源均失效):', error);
-            // 可以在此处显示一个友好的提示
-            $('#main-map').html('<div style="color:#f87171; padding:20px;">地图资源加载失败，请检查网络连接或 API 配置</div>');
-        } finally {
-            if (this.chart) this.chart.hideLoading();
+            console.error('加载地图失败:', error);
         }
     },
 
@@ -59,37 +37,23 @@ const MapModule = {
         $('#breadcrumb-province').text(provinceName).show().addClass('active');
         $('#breadcrumb-national').removeClass('active');
 
-        if (this.chart) {
-            this.chart.showLoading({
-                text: `正在加载${provinceName}数据...`,
-                color: '#38bdf8',
-                textColor: '#a5b4fc',
-                maskColor: 'rgba(11, 15, 45, 0.6)'
-            });
-        }
-
         try {
-            const url = AppConfig.geoSource.province.replace('{adcode}', adcode);
-            const response = await fetch(url);
-            if (!response.ok) throw new Error('Province GeoJSON fetch failed');
+            const response = await fetch(`https://geo.datav.aliyun.com/areas_v3/bound/${adcode}_full.json`);
             const provinceJson = await response.json();
-            
             echarts.registerMap(provinceName, provinceJson);
             
             // 模拟省级下的市级数据，增加 cp 坐标
             const cityData = provinceJson.features.map(f => ({
                 name: f.properties.name,
-                value: Math.floor(Math.random() * 800) + 100,
-                intensity: parseFloat((Math.random() * 0.8 + 0.4).toFixed(2)),
-                status: Math.random() > 0.8 ? 'over' : 'ok',
+                value: Math.floor(Math.random() * 500) + 100,
+                intensity: parseFloat((Math.random() * 0.6 + 0.6).toFixed(2)),
+                status: Math.random() > 0.7 ? 'over' : 'ok',
                 cp: f.properties.center || f.properties.centroid
             }));
 
             this.renderMap(provinceName, cityData);
         } catch (error) {
             console.error(`加载${provinceName}地图失败:`, error);
-        } finally {
-            if (this.chart) this.chart.hideLoading();
         }
     },
 
@@ -163,15 +127,27 @@ const MapModule = {
                     return params.name;
                 }
             },
-            visualMap: {
+            visualMap: showUsage ? {
                 show: true,
-                id: showUsage ? 'usageMap' : 'intensityMap',
+                id: 'usageMap',
                 min: 0,
-                max: showUsage ? AppConfig.dataRange.usage.max : AppConfig.dataRange.intensity.max,
+                max: 1500,
                 left: '20',
                 bottom: '20',
-                orient: 'horizontal',
-                text: showUsage ? ['高用量', '低用量'] : ['高强度', '低强度'],
+                text: ['高用量', '低用量'],
+                calculable: true,
+                inRange: {
+                    color: ['#4ade80', '#fbbf24', '#f87171']
+                },
+                textStyle: { color: '#fff' }
+            } : {
+                show: true,
+                id: 'intensityMap',
+                min: 0.3,
+                max: 1.3,
+                left: '20',
+                bottom: '20',
+                text: ['高强度', '低强度'],
                 calculable: true,
                 inRange: {
                     color: ['#4ade80', '#fbbf24', '#f87171']
