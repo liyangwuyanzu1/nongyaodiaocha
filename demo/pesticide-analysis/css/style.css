@@ -1,0 +1,611 @@
+/* 全局样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-color: #0b0f2d;
+    --panel-bg: rgba(16, 24, 64, 0.8);
+    --border-color: #1e3a8a;
+    --text-primary: #ffffff;
+    --text-secondary: #a5b4fc;
+    --accent-blue: #38bdf8;
+    --accent-green: #4ade80;
+    --accent-red: #f87171;
+    --accent-yellow: #fbbf24;
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    overflow: hidden; /* 大屏通常不滚动 */
+    height: 100vh;
+}
+
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 10px;
+    gap: 10px;
+}
+
+/* 头部样式 */
+.header {
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(30, 58, 138, 0.5), transparent);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0 20px;
+    flex-shrink: 0;
+}
+
+/* 下拉选择框样式 */
+.title-select, .map-select {
+    background: rgba(30, 58, 138, 0.4);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 12px;
+    padding: 2px 4px;
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+}
+
+.title-select {
+    margin-left: 10px;
+}
+
+.map-select {
+    margin: 0 5px;
+}
+
+.title-select option, .map-select option {
+    background: var(--bg-color);
+    color: var(--text-primary);
+}
+
+.header-center h1 {
+    font-size: 24px;
+    letter-spacing: 2px;
+    background: linear-gradient(to bottom, #fff, #38bdf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+.header-left, .header-right {
+    font-size: 14px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* 时间筛选器 */
+.time-filter {
+    display: flex;
+    align-items: center;
+    background: rgba(30, 58, 138, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 2px;
+}
+
+.filter-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 4px 12px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s;
+    border-radius: 2px;
+}
+
+.filter-btn:hover {
+    color: var(--text-primary);
+}
+
+.filter-btn.active {
+    background: var(--accent-blue);
+    color: #fff;
+}
+
+.custom-range {
+    position: relative;
+    margin-left: 5px;
+    display: flex;
+    align-items: center;
+}
+
+#date-range-picker {
+    background: rgba(11, 15, 45, 0.6);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 4px 10px;
+    font-size: 12px;
+    border-radius: 2px;
+    width: 180px;
+    cursor: pointer;
+}
+
+/* Tab 切换样式 */
+.tabbed-chart {
+    padding: 0 !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-title-fixed {
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px 10px 5px 10px;
+    border-left: 3px solid var(--accent-blue);
+    color: var(--text-primary);
+}
+
+.chart-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 10px;
+    border-bottom: 1px solid rgba(30, 58, 138, 0.3);
+}
+
+.mini-tabs {
+    display: flex;
+    gap: 5px;
+}
+
+.mini-tab-btn {
+    background: rgba(30, 58, 138, 0.3);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 2px 8px;
+    cursor: pointer;
+    font-size: 11px;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.mini-tab-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--accent-blue);
+}
+
+.mini-tab-btn.active {
+    background: var(--accent-blue);
+    color: #fff;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+}
+
+.chart-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    background: rgba(30, 58, 138, 0.2);
+}
+
+.tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.3s;
+    border-bottom: 2px solid transparent;
+}
+
+.tab-btn:hover {
+    color: var(--text-primary);
+}
+
+.tab-btn.active {
+    color: var(--accent-blue);
+    border-bottom-color: var(--accent-blue);
+    background: rgba(56, 189, 248, 0.05);
+}
+
+.tab-content {
+    flex: 1;
+    position: relative;
+}
+
+.tab-content .chart-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+
+.tab-content .chart-container.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* 核心指标卡片 */
+.top-indicators {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    height: 100px;
+    flex-shrink: 0;
+}
+
+.indicator-card {
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+}
+
+.indicator-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--accent-blue);
+}
+
+.indicator-card.highlight::before {
+    background: var(--accent-yellow);
+}
+
+.indicator-card .label {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.indicator-card .value {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--accent-blue);
+}
+
+.indicator-card .unit {
+    font-size: 12px;
+    font-weight: normal;
+}
+
+.indicator-card .comparison {
+    font-size: 11px;
+}
+
+.up { color: var(--accent-red); }
+.down { color: var(--accent-green); }
+
+.status-tag {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    padding: 2px 6px;
+    font-size: 10px;
+    border-radius: 2px;
+}
+
+.status-tag.success { background: rgba(74, 222, 128, 0.2); color: var(--accent-green); border: 1px solid var(--accent-green); }
+
+/* 主体布局 */
+.main-content {
+    display: flex;
+    flex: 1;
+    gap: 10px;
+    min-height: 0; /* 允许 flex 子元素在 overflow 时收缩 */
+}
+
+.side-panel {
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.center-panel {
+    flex: 1;
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-box {
+    flex: 1;
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-title {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    border-left: 3px solid var(--accent-blue);
+    color: var(--text-primary);
+}
+
+.chart-container {
+    flex: 1;
+    width: 100%;
+    min-height: 100px;
+}
+
+/* 地图控制项 */
+.map-controls {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.layer-toggle {
+    background: rgba(11, 15, 45, 0.9);
+    padding: 10px 15px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.radio-label, .checkbox-label {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+    transition: all 0.3s;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.radio-label:hover, .checkbox-label:hover {
+    color: var(--text-primary);
+    background: rgba(56, 189, 248, 0.1);
+}
+
+.radio-label.active {
+    color: var(--accent-blue);
+    background: rgba(56, 189, 248, 0.15);
+    font-weight: bold;
+}
+
+.divider {
+    width: 1px;
+    height: 16px;
+    background: var(--border-color);
+    margin: 0 5px;
+}
+
+.map-breadcrumb {
+    background: rgba(11, 15, 45, 0.8);
+    padding: 4px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    font-size: 12px;
+}
+
+.crumb {
+    cursor: pointer;
+    color: var(--text-secondary);
+}
+
+.crumb.active {
+    color: var(--accent-blue);
+}
+
+.crumb:not(:last-child)::after {
+    content: ' > ';
+    margin: 0 5px;
+    color: var(--text-secondary);
+}
+
+.map-container {
+    flex: 1;
+}
+
+.map-legend {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background: rgba(11, 15, 45, 0.9);
+    padding: 12px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    font-size: 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none; /* 避免挡住地图交互 */
+}
+
+.legend-title {
+    font-weight: bold;
+    color: var(--accent-blue);
+    margin-bottom: 4px;
+    border-bottom: 1px solid rgba(56, 189, 248, 0.3);
+    padding-bottom: 4px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-secondary);
+}
+
+.color-box.heatmap-usage { 
+    width: 30px; 
+    height: 12px; 
+    background: linear-gradient(to right, rgba(74, 222, 128, 0.6), rgba(251, 191, 36, 0.8), rgba(248, 113, 113, 1));
+    border-radius: 2px;
+}
+
+.color-box.heatmap-intensity { 
+    width: 30px; 
+    height: 12px; 
+    background: linear-gradient(to right, #4ade80, #fbbf24, #f87171);
+    border-radius: 2px;
+}
+
+.marker-circle { width: 12px; height: 12px; border-radius: 50%; }
+.marker-circle.high { background: #f87171; border: 1px solid #fff; }
+.marker-circle.low { background: #4ade80; border: 1px solid #fff; }
+
+.marker-station {
+    width: 14px;
+    height: 18px;
+    background: #00f2ff;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    margin-left: 3px;
+    margin-top: -3px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    position: relative;
+    border: 1px solid #fff;
+}
+
+.marker-station::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: #fff;
+    position: absolute;
+    border-radius: 50%;
+    top: 4px;
+    left: 4px;
+}
+
+@keyframes ripple {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(2.5); opacity: 0; }
+}
+
+/* 关联指标网格 */
+.indicator-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    flex: 1;
+}
+
+.mini-card {
+    background: rgba(30, 58, 138, 0.2);
+    border: 1px solid rgba(30, 58, 138, 0.4);
+    padding: 8px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s;
+}
+
+.mini-card:hover {
+    transform: scale(1.02);
+    border-color: var(--accent-blue);
+}
+
+.mini-label { font-size: 11px; color: var(--text-secondary); }
+.mini-value { font-size: 16px; font-weight: bold; color: var(--accent-green); }
+.sparkline { height: 30px; width: 100%; }
+
+/* 弹窗样式 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: var(--bg-color);
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid var(--accent-blue);
+    width: 500px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+    position: relative;
+}
+
+.close-btn {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-secondary);
+}
+
+.modal-body { margin-top: 20px; }
+.modal-section { margin-bottom: 20px; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+th { color: var(--text-secondary); }
+
+.level-tag {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.level-tag.high { background: rgba(248, 113, 113, 0.2); color: var(--accent-red); border: 1px solid var(--accent-red); }
+
+/* 移动端适配 */
+@media (max-width: 1200px) {
+    .dashboard-container { overflow-y: auto; height: auto; }
+    .top-indicators { grid-template-columns: repeat(3, 1fr); height: auto; }
+    .main-content { flex-direction: column; }
+    .side-panel { width: 100%; }
+    .center-panel { height: 500px; }
+}
+
+@media (max-width: 768px) {
+    .top-indicators { grid-template-columns: repeat(2, 1fr); }
+}
